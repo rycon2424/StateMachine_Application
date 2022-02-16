@@ -9,7 +9,7 @@ public class DraggableMouse : Draggable, IDragHandler
     {
         if (eventData.pointerId == EnumToID())
         {
-            transform.position = Input.mousePosition;
+            transform.position = Camera.main.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, 100));
         }
     }
 }
