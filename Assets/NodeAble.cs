@@ -9,28 +9,43 @@ public class NodeAble : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
     [SerializeField] bool hovered;
     [SerializeField] GameObject nodePrefab;
     [Space]
-    [SerializeField] LineRenderer currentNode;
+    public LineRenderer currentNode;
+    [Space]
+    public List<Node> nodes;
 
     public void OnPointerEnter(PointerEventData eventData)
     {
         hovered = true;
+        NodeManager.currentHoveringNode = this;
     }
 
     public void OnPointerExit(PointerEventData eventData)
     {
         hovered = false;
+        NodeManager.currentHoveringNode = null;
     }
 
     private void Update()
     {
         if (currentNode != null)
         {
+            Vector3 calculatedTempPos = Camera.main.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, 0));
+            calculatedTempPos = new Vector3(calculatedTempPos.x, calculatedTempPos.y, 0);
+            currentNode.SetPosition(1, calculatedTempPos);
 
-            currentNode.SetPosition(1, Camera.main.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, 0)));
             if (Input.GetMouseButtonUp(1))
             {
-                Debug.Log("Reset");
-                currentNode = null;
+                if (NodeManager.currentHoveringNode != null && NodeManager.currentHoveringNode != this)
+                {
+                    NodeManager.ConnectNodes(currentNode.GetComponent<Node>(), this, NodeManager.currentHoveringNode);
+                    nodes.Add(currentNode.GetComponent<Node>());
+                    currentNode = null;
+                }
+                else
+                {
+                    Destroy(currentNode.gameObject);
+                    currentNode = null;
+                }
             }
         }
         if (hovered == false)
