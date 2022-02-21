@@ -1682,7 +1682,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d9742f7ec33251b4b8e3ea8d352462ab, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxZoom: 500
+  maxZoom: 700
   minZoom: 300
   block: {fileID: 8158985577423738527, guid: e2f7fafcbc2c8034e838d91e33901765, type: 3}
   editView: {fileID: 1931795904}
