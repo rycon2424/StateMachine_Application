@@ -7,33 +7,54 @@ public class ApplicationControl : MonoBehaviour
 {
     [SerializeField] float maxZoom = 3.0f;
     [SerializeField] float minZoom = 0.5f;
-    [SerializeField] RectTransform editView;
+    [SerializeField] GameObject block;
+    [SerializeField] Transform editView;
+    private Camera mainCam;
 
     void Start()
     {
-        
+        mainCam = Camera.main;
     }
 
     void Update()
     {
-        float mouseScroll = Input.mouseScrollDelta.y;
-        if (mouseScroll > 0 && editView.localScale.x < maxZoom)
+        GridMovement();
+    }
+
+    void GridMovement()
+    {
+        if (Input.GetMouseButton(2))
         {
-            editView.localScale *= 1.1f;
-        }
-        if (editView.localScale.x > maxZoom)
-        {
-            editView.localScale = new Vector3(maxZoom, maxZoom, maxZoom);
+            float mouseX = (Input.mousePosition.x / Screen.width) - 0.5f;
+            float mouseY = (Input.mousePosition.y / Screen.height) - 0.5f;
+            mainCam.transform.position += new Vector3(mouseX, mouseY, 0);
         }
 
-        if (mouseScroll < 0 && editView.localScale.x > minZoom)
+        float mouseScroll = Input.mouseScrollDelta.y;
+        if (mouseScroll < 0 && mainCam.orthographicSize < maxZoom)
         {
-            editView.localScale /= 1.1f;
+            mainCam.orthographicSize *= 1.1f;
         }
-        if (editView.localScale.x < minZoom)
+        if (mainCam.orthographicSize > maxZoom)
         {
-            editView.localScale = new Vector3(minZoom, minZoom, minZoom);
+            mainCam.orthographicSize = maxZoom;
         }
+
+        if (mouseScroll > 0 && mainCam.orthographicSize > minZoom)
+        {
+            mainCam.orthographicSize /= 1.1f; 
+        }
+        if (mainCam.orthographicSize < minZoom)
+        {
+            mainCam.orthographicSize = minZoom;
+        }
+    }
+
+    public void SpawnBlock()
+    {
+        Vector3 point = new Vector3(mainCam.transform.position.x, mainCam.transform.position.y, mainCam.transform.position.z);
+        GameObject spawnedBlock = Instantiate(block, editView);
+        spawnedBlock.GetComponent<RectTransform>().position = point;
     }
 
 }
