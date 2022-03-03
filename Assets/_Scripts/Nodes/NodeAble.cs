@@ -13,6 +13,13 @@ public class NodeAble : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
     [Space]
     public List<Node> nodes;
 
+    public Color imagecolor;
+
+    void Awake()
+    {
+        imagecolor = GetComponent<Image>().color;
+    }
+
     public void OnPointerEnter(PointerEventData eventData)
     {
         hovered = true;
@@ -59,4 +66,5 @@ public class NodeAble : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
             currentNode.SetPosition(0, transform.position + new Vector3(0, 0, 0));
         }
     }
+
 }

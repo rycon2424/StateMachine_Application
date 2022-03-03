@@ -1,18 +1,21 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
+using UnityEngine.EventSystems;
 
-public class ClickAble : MonoBehaviour
+public class ClickAble : MonoBehaviour, IPointerClickHandler
 {
-    // Start is called before the first frame update
-    void Start()
+
+    private Image colorImage;
+    void Awake()
     {
-        
+        colorImage = GetComponent<Image>();
     }
 
-    // Update is called once per frame
-    void Update()
+
+    public void OnPointerClick(PointerEventData eventData)
     {
-        
+        Inspector.instance.LoadInspector(gameObject, colorImage.color);
     }
 }
