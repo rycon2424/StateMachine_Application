@@ -7,6 +7,7 @@ public class ApplicationControl : MonoBehaviour
 {
     [SerializeField] float maxZoom = 3.0f;
     [SerializeField] float minZoom = 0.5f;
+    [SerializeField] float camSpeed = 3.0f;
     [SerializeField] GameObject block;
     [SerializeField] Transform editView;
     private Camera mainCam;
@@ -27,7 +28,7 @@ public class ApplicationControl : MonoBehaviour
         {
             float mouseX = (Input.mousePosition.x / Screen.width) - 0.5f;
             float mouseY = (Input.mousePosition.y / Screen.height) - 0.5f;
-            mainCam.transform.position += new Vector3(mouseX, mouseY, 0);
+            mainCam.transform.position += new Vector3(mouseX, mouseY, 0) * camSpeed;
         }
 
         float mouseScroll = Input.mouseScrollDelta.y;
