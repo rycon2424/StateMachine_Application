@@ -13,11 +13,11 @@ public class NodeAble : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
     [Space]
     public List<Node> nodes;
 
-    public Color imagecolor;
+    [HideInInspector] public Block block;
 
     void Awake()
     {
-        imagecolor = GetComponent<Image>().color;
+        block = GetComponent<Block>();
     }
 
     public void OnPointerEnter(PointerEventData eventData)

@@ -10,6 +10,11 @@ public class ApplicationControl : MonoBehaviour
     [SerializeField] float camSpeed = 3.0f;
     [SerializeField] GameObject block;
     [SerializeField] Transform editView;
+    [SerializeField] InputField newStateField;
+    [SerializeField] Button newStateButton;
+    [Space]
+    public List<string> existingStates = new List<string>();
+
     private Camera mainCam;
 
     void Start()
@@ -56,6 +61,35 @@ public class ApplicationControl : MonoBehaviour
         Vector3 point = new Vector3(mainCam.transform.position.x, mainCam.transform.position.y, mainCam.transform.position.z);
         GameObject spawnedBlock = Instantiate(block, editView);
         spawnedBlock.GetComponent<RectTransform>().position = point;
+
+        spawnedBlock.GetComponent<Block>().SetName(newStateField.text);
+
+        existingStates.Add(newStateField.text);
+
+        newStateField.text = "";
+        newStateButton.interactable = false;
     }
+
+    public void CheckAvailability()
+    {
+        bool notAvailable = false;
+        if (newStateField.text.Length < 1)
+        {
+            newStateButton.interactable = false;
+            return;
+        }
+        foreach (var state in existingStates)
+        {
+            if (state == newStateField.text)
+            {
+                notAvailable = true;
+            }
+        }
+        if (notAvailable)
+            newStateButton.interactable = false;
+        else
+            newStateButton.interactable = true;
+    }
+
 
 }
