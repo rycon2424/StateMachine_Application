@@ -8,11 +8,11 @@ public class ClickAble : MonoBehaviour, IPointerClickHandler
 {
 
     private Image colorImage;
+
     void Awake()
     {
         colorImage = GetComponent<Image>();
     }
-
 
     public void OnPointerClick(PointerEventData eventData)
     {

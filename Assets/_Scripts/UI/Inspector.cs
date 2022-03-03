@@ -41,7 +41,7 @@ public class Inspector : MonoBehaviour
 
     public void ColorUpdate()
     {
-        Color c = new Color( sliderRed.value, sliderBlue.value,  sliderGreen.value );
+        Color c = new Color( sliderRed.value, sliderGreen.value,  sliderBlue.value );
         currentBlock.GetComponent<Image>().color = c;
         currentBlock.GetComponent<NodeAble>().imagecolor = c;
         bgImage.color = c;
