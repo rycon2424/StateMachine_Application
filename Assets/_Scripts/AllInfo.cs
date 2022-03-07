@@ -48,9 +48,33 @@ class BlockInfo
 }
 
 [System.Serializable]
-class Connection
+public class Connection
 {
     public string from;
     public string to;
-    public int condition;
+    public Conditions[] conditions;
+    // 0 = boolean == / =!
+    // 1 = int > / < / =
+    // 2 = float > / < / ==
 }
+
+[System.Serializable]
+public class Conditions
+{
+    public string conditionName = "";
+    public int typeCondition = 0;
+    // 0 = boolean == / =!
+    // 1 = int > / < / == / <= / >=
+    // 2 = float > / < / == / <= / >=
+    public bool boolValue = true;
+    public int intValue = 0;
+    public float floatValue = 0;
+
+    public int intFloatCon;
+    // 0 ==
+    // 1 >
+    // 2 <
+    // 3 <=
+    // 4 >=
+}
+

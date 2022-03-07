@@ -58,6 +58,8 @@ public class NodeAble : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 
         if (Input.GetMouseButtonDown(1))
         {
+            Inspector.instance.CleanInspector();
+
             currentNode = Instantiate(nodePrefab, transform).GetComponent<LineRenderer>();
             currentNode.material.color = GetComponent<Image>().color;
             currentNode.transform.localPosition = Vector3.zero;

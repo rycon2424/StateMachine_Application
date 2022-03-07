@@ -13,21 +13,25 @@ public class Inspector : MonoBehaviour
     [Space]
     public Image bgImage;
     public InputField stateNameField;
+    public Toggle deleteToggle;
+    public Button deleteButton;
 
     [Header("Color Component")]
-    public GameObject currentBlock;
+    [ReadOnly] public GameObject currentBlock;
     public Slider sliderRed;
     public Slider sliderGreen;
     public Slider sliderBlue;
 
     [Header("Connections Component")]
+    public RectTransform contentBox;
     public GameObject conditionPrefab;
     public Transform conditionsContentBox;
     public Vector3 startSpawnPos;
-    private List<GameObject> conditionList = new List<GameObject>();
+    public int spacing = 30;
+    public int spacingAfterNewCon;
 
-    [Header("Conditions Component")]
-    public GameObject connectionPrefab;
+    private Color cleanColor;
+    private List<GameObject> conditionList = new List<GameObject>();
 
     ApplicationControl ac;
 
@@ -40,6 +44,23 @@ public class Inspector : MonoBehaviour
             Destroy(instance);
 
         instance = this;
+    }
+
+    private void Start()
+    {
+        cleanColor = bgImage.color;
+    }
+
+    public void ReloadConditions()
+    {
+        ClearInspector();
+        ConditionComponent();
+    }
+
+    public void CleanInspector()
+    {
+        bgImage.color = cleanColor;
+        objectSelected.SetActive(false);
     }
 
     public void LoadInspector(GameObject g, Color c)
@@ -59,19 +80,7 @@ public class Inspector : MonoBehaviour
         sliderGreen.value = c.g;
         sliderBlue.value = c.b;
 
-        for (int i = 0; i < blockComponent.connections.Count; i++)
-        {
-            GameObject go = Instantiate(conditionPrefab, conditionsContentBox);
-            Vector3 spawnPos = startSpawnPos - new Vector3(0, 20 * i, 0);
-            go.GetComponent<RectTransform>().position = spawnPos;
-            string connectionText = blockComponent.connections[i].from.block.blockName + " > " + blockComponent.connections[i].to.block.blockName;
-            ConnectionBox conBox = go.GetComponent<ConnectionBox>();
-            conBox.transitionText.text = connectionText;
-
-            Node temp = blockComponent.connections[i];
-            conBox.delete.onClick.AddListener(() => RemoveConnection(temp));
-            conditionList.Add(go);
-        }
+        ConditionComponent();
 
         objectSelected.SetActive(true);
     }
@@ -83,6 +92,44 @@ public class Inspector : MonoBehaviour
             Destroy(condition);
         }
         conditionList.Clear();
+        deleteToggle.isOn = false;
+        deleteButton.interactable = false;
+    }
+
+    void ConditionComponent()
+    {
+        int previousConditions = 0;
+        int sizeMultiplyer = 0;
+        for (int i = 0; i < blockComponent.connections.Count; i++)
+        {
+            sizeMultiplyer += blockComponent.connections[i].cons.Count;
+        }
+
+        contentBox.sizeDelta = new Vector2(contentBox.sizeDelta.x, 500 + 100 * (blockComponent.connections.Count + sizeMultiplyer));
+        for (int i = 0; i < blockComponent.connections.Count; i++)
+        {
+            GameObject go = Instantiate(conditionPrefab, conditionsContentBox);
+
+            Vector3 spawnPos = startSpawnPos - new Vector3(0, (spacing + (spacingAfterNewCon * previousConditions)) * i, 0);
+
+            go.GetComponent<RectTransform>().position = spawnPos;
+            string connectionText = blockComponent.connections[i].from.block.blockName + " > " + blockComponent.connections[i].to.block.blockName;
+            ConnectionBox conBox = go.GetComponent<ConnectionBox>();
+            conBox.transitionText.text = connectionText;
+            conBox.thisNode = blockComponent.connections[i];
+
+            Node temp = blockComponent.connections[i];
+            conBox.delete.onClick.AddListener(() => RemoveConnection(temp));
+            conditionList.Add(go);
+
+            previousConditions = 0;
+
+            for (int p = 0; p < conBox.thisNode.cons.Count; p++)
+            {
+                conBox.LoadCondition(conBox.thisNode.cons[p], p);
+                previousConditions++;
+            }
+        }
     }
 
     public void ColorUpdate()
