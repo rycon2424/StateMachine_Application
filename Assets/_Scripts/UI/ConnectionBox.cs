@@ -36,7 +36,7 @@ public class ConnectionBox : MonoBehaviour
     {
         Condition c = Instantiate(conditionPrefab, gameObject.transform).GetComponent<Condition>();
         c.connectionBox = this;
-        c.GetComponent<RectTransform>().localPosition = GetComponent<RectTransform>().localPosition - spawnOffset - new Vector3(0, conditionOffset * order, 0);
+        c.GetComponent<RectTransform>().localPosition -= new Vector3(0, 67 * order, 0);
 
     }
 
