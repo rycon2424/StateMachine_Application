@@ -6,4 +6,7 @@ using UnityEngine.UI;
 public class ConnectionBox : MonoBehaviour
 {
     public Text transitionText;
+    public Button delete;
+    [Space]
+    public int amountOfConditions;
 }

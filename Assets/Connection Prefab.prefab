@@ -206,6 +206,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   transitionText: {fileID: 1846700987264782943}
+  delete: {fileID: 1846700988605150723}
 --- !u!1 &1846700988605150721
 GameObject:
   m_ObjectHideFlags: 0

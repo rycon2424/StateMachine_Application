@@ -9,7 +9,7 @@ public class Inspector : MonoBehaviour
     public static Inspector instance;
 
     public GameObject objectSelected;
-    [ReadOnly] [ShowInInspector] GameObject blockComponent;
+    [ReadOnly] [ShowInInspector] Block blockComponent;
     [Space]
     public Image bgImage;
     public InputField stateNameField;
@@ -50,7 +50,7 @@ public class Inspector : MonoBehaviour
         }
 
         currentBlock = g;
-        Block blockComponent = g.GetComponent<Block>();
+        blockComponent = g.GetComponent<Block>();
 
         ogName = blockComponent.blockName;
         stateNameField.text = ogName;
@@ -65,7 +65,11 @@ public class Inspector : MonoBehaviour
             Vector3 spawnPos = startSpawnPos - new Vector3(0, 20 * i, 0);
             go.GetComponent<RectTransform>().position = spawnPos;
             string connectionText = blockComponent.connections[i].from.block.blockName + " > " + blockComponent.connections[i].to.block.blockName;
-            go.GetComponent<ConnectionBox>().transitionText.text = connectionText;
+            ConnectionBox conBox = go.GetComponent<ConnectionBox>();
+            conBox.transitionText.text = connectionText;
+
+            Node temp = blockComponent.connections[i];
+            conBox.delete.onClick.AddListener(() => RemoveConnection(temp));
             conditionList.Add(go);
         }
 
@@ -91,7 +95,9 @@ public class Inspector : MonoBehaviour
 
     public void RemoveConnection(Node nodeToRemove)
     {
-
+        blockComponent.connections.Remove(nodeToRemove);
+        Destroy(nodeToRemove.gameObject);
+        LoadInspector(currentBlock, currentBlock.GetComponent<Image>().color);
     }
 
     private string ogName;

@@ -13,7 +13,10 @@ public class Block : MonoBehaviour
 
     void Awake()
     {
-        imagecolor = GetComponent<Image>().color;
+        Color randomC = new Color(Random.Range(0.1f, 1f), Random.Range(0.1f, 1f), Random.Range(0.1f, 1f));
+        Image i = GetComponent<Image>();
+        i.color = randomC;
+        imagecolor = i.color;
     }
 
     public void SetName(string bName)

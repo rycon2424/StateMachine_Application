@@ -24,4 +24,9 @@ public class Node : MonoBehaviour
             }
         }
     }
+
+    public void DestroySelf()
+    {
+        Destroy(gameObject);
+    }
 }
