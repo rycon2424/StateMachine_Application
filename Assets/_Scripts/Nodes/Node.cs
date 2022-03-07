@@ -2,13 +2,13 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+[System.Serializable]
 public class Node : MonoBehaviour
 {
     public NodeAble from;
     public NodeAble to;
     [Space]
     public LineRenderer lr;
-    //public GameObject arrow;
 
     private void Update()
     {

@@ -10,8 +10,6 @@ public class NodeAble : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
     [SerializeField] GameObject nodePrefab;
     [Space]
     public LineRenderer currentNode;
-    [Space]
-    public List<Node> nodes;
 
     [HideInInspector] public Block block;
 
@@ -45,7 +43,7 @@ public class NodeAble : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
                 if (NodeManager.currentHoveringNode != null && NodeManager.currentHoveringNode != this)
                 {
                     NodeManager.ConnectNodes(currentNode.GetComponent<Node>(), this, NodeManager.currentHoveringNode);
-                    nodes.Add(currentNode.GetComponent<Node>());
+                    block.connections.Add(currentNode.GetComponent<Node>());
                     currentNode = null;
                 }
                 else

@@ -2,12 +2,15 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using Sirenix.OdinInspector;
 
 public class Inspector : MonoBehaviour
 {
     public static Inspector instance;
 
     public GameObject objectSelected;
+    [ReadOnly] [ShowInInspector] GameObject blockComponent;
+    [Space]
     public Image bgImage;
     public InputField stateNameField;
 
@@ -17,10 +20,13 @@ public class Inspector : MonoBehaviour
     public Slider sliderGreen;
     public Slider sliderBlue;
 
-    [Header("Conditions Component")]
-    public GameObject conditionPrefab;
-
     [Header("Connections Component")]
+    public GameObject conditionPrefab;
+    public Transform conditionsContentBox;
+    public Vector3 startSpawnPos;
+    private List<GameObject> conditionList = new List<GameObject>();
+
+    [Header("Conditions Component")]
     public GameObject connectionPrefab;
 
     ApplicationControl ac;
@@ -38,13 +44,41 @@ public class Inspector : MonoBehaviour
 
     public void LoadInspector(GameObject g, Color c)
     {
+        if (currentBlock != null)
+        {
+            ClearInspector();
+        }
+
         currentBlock = g;
-        ogName = g.GetComponent<Block>().blockName;
+        Block blockComponent = g.GetComponent<Block>();
+
+        ogName = blockComponent.blockName;
         stateNameField.text = ogName;
-        objectSelected.SetActive(true);
+
         sliderRed.value = c.r;
         sliderGreen.value = c.g;
         sliderBlue.value = c.b;
+
+        for (int i = 0; i < blockComponent.connections.Count; i++)
+        {
+            GameObject go = Instantiate(conditionPrefab, conditionsContentBox);
+            Vector3 spawnPos = startSpawnPos - new Vector3(0, 20 * i, 0);
+            go.GetComponent<RectTransform>().position = spawnPos;
+            string connectionText = blockComponent.connections[i].from.block.blockName + " > " + blockComponent.connections[i].to.block.blockName;
+            go.GetComponent<ConnectionBox>().transitionText.text = connectionText;
+            conditionList.Add(go);
+        }
+
+        objectSelected.SetActive(true);
+    }
+
+    void ClearInspector()
+    {
+        foreach (var condition in conditionList)
+        {
+            Destroy(condition);
+        }
+        conditionList.Clear();
     }
 
     public void ColorUpdate()
@@ -53,6 +87,11 @@ public class Inspector : MonoBehaviour
         currentBlock.GetComponent<Image>().color = c;
         currentBlock.GetComponent<Block>().imagecolor = c;
         bgImage.color = c;
+    }
+
+    public void RemoveConnection(Node nodeToRemove)
+    {
+
     }
 
     private string ogName;

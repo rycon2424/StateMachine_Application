@@ -8,6 +8,8 @@ public class Block : MonoBehaviour
     public string blockName;
     [SerializeField] Text blockNameText;
     public Color imagecolor;
+    [Space]
+    public List<Node> connections;
 
     void Awake()
     {

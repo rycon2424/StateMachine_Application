@@ -360,8 +360,8 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 497112969}
   m_HandleRect: {fileID: 497112968}
   m_Direction: 2
-  m_Value: 0.9694657
-  m_Size: 0.99999094
+  m_Value: -23039726
+  m_Size: 0.99526125
   m_NumberOfSteps: 0
   m_OnValueChanged:
     m_PersistentCalls:
@@ -581,7 +581,9 @@ MonoBehaviour:
   sliderRed: {fileID: 2081848188}
   sliderGreen: {fileID: 1047492864}
   sliderBlue: {fileID: 368394510}
-  conditionPrefab: {fileID: 0}
+  conditionPrefab: {fileID: 1846700988419508426, guid: ebd52d9780281de4fb183c31c602102e, type: 3}
+  conditionsContentBox: {fileID: 1431729395}
+  startSpawnPos: {x: 75, y: 180, z: 0}
   connectionPrefab: {fileID: 0}
 --- !u!1 &121553361
 GameObject:
@@ -999,7 +1001,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 24237842}
   m_SizeDelta: {x: 0, y: 220.95}
   m_Pivot: {x: 0, y: 1}
 --- !u!1 &200030117
@@ -9762,7 +9764,7 @@ MonoBehaviour:
   m_BlockingObjects: 0
   m_BlockingMask:
     serializedVersion: 2
-    m_Bits: 4294967295
+    m_Bits: 55
 --- !u!114 &1766123079
 MonoBehaviour:
   m_ObjectHideFlags: 0
