@@ -28,6 +28,9 @@ public class ConnectionBox : MonoBehaviour
 
         c.valueName.text = cons.conditionName;
 
+        cons.id = AllInfo.instance.GetID();
+        c.id = cons.id;
+
         thisNode.cons.Add(cons);
         Inspector.instance.ReloadConditions();
     }
@@ -37,28 +40,29 @@ public class ConnectionBox : MonoBehaviour
         Condition c = Instantiate(conditionPrefab, gameObject.transform).GetComponent<Condition>();
         c.connectionBox = this;
         c.GetComponent<RectTransform>().localPosition -= new Vector3(0, 67 * order, 0);
-
+        c.LoadCondition(con);
     }
 
     public void UpdateCondition(Condition condition)
     {
         foreach (var con in thisNode.cons)
         {
-            if (con.conditionName == condition.valueName.text)
+            //Debug.Log($"{con.id} / {condition.id}");
+            if (con.id == condition.id)
             {
-                CopyValues(condition, con);
+                SaveCondition(condition, con);
                 break;
             }
         }
     }
 
-    void CopyValues(Condition from, Conditions to)
+    void SaveCondition(Condition from, Conditions to)
     {
         to.conditionName = from.valueName.text;
         to.typeCondition = from.types.value;
         to.boolValue = from.booleanToggle.isOn;
-        to.intValue =   int.Parse(from.intFloatValue.text);
-        to.floatValue = float.Parse(from.intFloatValue.text);
+        to.intValue = from.intValue.text;
+        to.floatValue = from.floatValue.text;
         to.intFloatCon = from.intFloatDropDown.value;
     }
 

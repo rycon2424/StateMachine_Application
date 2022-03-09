@@ -16,6 +16,17 @@ public class AllInfo : MonoBehaviour
         instance = this;
     }
 
+    public int GetID()
+    {
+        int randomID = Random.Range(0, 50000);
+        while (takenIDs.Contains(randomID))
+        {
+            randomID = Random.Range(0, 50000);
+        }
+        takenIDs.Add(randomID);
+        return randomID;
+    }
+
     public void AddNewBlock(Block blockToAdd)
     {
 
@@ -67,8 +78,8 @@ public class Conditions
     // 1 = int > / < / == / <= / >=
     // 2 = float > / < / == / <= / >=
     public bool boolValue = true;
-    public int intValue = 0;
-    public float floatValue = 0;
+    public string intValue = "0";
+    public string floatValue = "0";
 
     public int intFloatCon;
     // 0 ==
@@ -76,5 +87,6 @@ public class Conditions
     // 2 <
     // 3 <=
     // 4 >=
+    public int id;
 }
 
