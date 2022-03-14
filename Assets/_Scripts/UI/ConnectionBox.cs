@@ -15,7 +15,7 @@ public class ConnectionBox : MonoBehaviour
     public float conditionOffset = 70;
     [Space]
     [ReadOnly] public Node thisNode; 
-
+    
     public void SpawnCondition()
     {
         Condition c = Instantiate(conditionPrefab, gameObject.transform).GetComponent<Condition>();
@@ -24,7 +24,8 @@ public class ConnectionBox : MonoBehaviour
 
         Conditions cons = new Conditions();
 
-        cons.conditionName = "Condition" + "(" + thisNode.cons.Count +")";
+        cons.conditionName = "Condition" + thisNode.cons.Count;
+        cons.toState = thisNode.to.block.blockName;
 
         c.valueName.text = cons.conditionName;
 
