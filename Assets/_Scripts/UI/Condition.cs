@@ -48,7 +48,7 @@ public class Condition : MonoBehaviour
 
         booleanToggle.isOn = cons.boolValue;
 
-        // Check if exists in global type
+        isGlobal.isOn = cons.isGlobal;
 
         types.value = cons.typeCondition;
 
@@ -57,12 +57,6 @@ public class Condition : MonoBehaviour
         lockSave = false;
 
         UpdatedType();
-    }
-
-    public void OnNameChange()
-    {
-        // Check if conditionName exists globally
-        // if so then toggle the global bool to true
     }
 
     public void UpdatedType()

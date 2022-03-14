@@ -78,6 +78,7 @@ public class ConnectionBox : MonoBehaviour
         to.intValue = from.intValue.text;
         to.floatValue = from.floatValue.text;
         to.intFloatCon = from.intFloatDropDown.value;
+        to.isGlobal = from.isGlobal.isOn;
     }
 
 }

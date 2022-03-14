@@ -16,7 +16,6 @@ public class AllInfo : MonoBehaviour
     [ReadOnly] public string onUpdateFunctionName;
 
     public List<Block> blocks = new List<Block>();
-    public List<string> globalVariables = new List<string>();
     [SerializeField] List<int> takenIDs = new List<int>();
 
     public static AllInfo instance;
@@ -324,6 +323,7 @@ public class Conditions
     // 1 = int > / < / == / <= / >=
     // 2 = float > / < / == / <= / >=
     public bool boolValue = true;
+    public bool isGlobal = false;
     public string intValue = "0";
     public string floatValue = "0";
 
