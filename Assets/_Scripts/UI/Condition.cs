@@ -21,6 +21,11 @@ public class Condition : MonoBehaviour
 
     private bool lockSave;
 
+    public void RemoveSelf()
+    {
+        connectionBox.RemoveCondition(id);
+    }
+
     public void SaveChange()
     {
         if (lockSave)

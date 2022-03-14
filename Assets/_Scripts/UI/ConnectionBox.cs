@@ -35,6 +35,19 @@ public class ConnectionBox : MonoBehaviour
         Inspector.instance.ReloadConditions();
     }
 
+    public void RemoveCondition(int id)
+    {
+        foreach (var condition in thisNode.cons)
+        {
+            if (condition.id == id)
+            {
+                thisNode.cons.Remove(condition);
+                break;
+            }
+        }
+        Inspector.instance.ReloadConditions();
+    }
+
     public void LoadCondition(Conditions con, int order)
     {
         Condition c = Instantiate(conditionPrefab, gameObject.transform).GetComponent<Condition>();

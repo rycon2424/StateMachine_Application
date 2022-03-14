@@ -15,7 +15,7 @@ public class AllInfo : MonoBehaviour
     [ReadOnly] public string onExitFunctionName;
     [ReadOnly] public string onUpdateFunctionName;
 
-    private List<Block> blocks = new List<Block>();
+    [SerializeField] List<Block> blocks = new List<Block>();
     [SerializeField] List<int> takenIDs = new List<int>();
 
     public static AllInfo instance;
@@ -28,6 +28,11 @@ public class AllInfo : MonoBehaviour
             Destroy(instance);
         bFormatter = new BinaryFormatter();
         instance = this;
+    }
+
+    public void RemoveID(int id)
+    {
+        takenIDs.Remove(id);
     }
 
     public int GetID()
@@ -61,7 +66,6 @@ public class AllInfo : MonoBehaviour
         if (!File.Exists(mainClassScript))
         {
             File.WriteAllText(mainClassScript, "lol");
-            Debug.Log("Created mainclass inside " + path);
         }
     }
 

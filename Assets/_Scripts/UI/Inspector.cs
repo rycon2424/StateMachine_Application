@@ -175,4 +175,11 @@ public class Inspector : MonoBehaviour
         }
     }
 
+    public void RemoveBlock()
+    {
+        Destroy(currentBlock);
+        ClearInspector();
+        CleanInspector();
+    }
+
 }
