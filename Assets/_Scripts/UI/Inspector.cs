@@ -177,6 +177,8 @@ public class Inspector : MonoBehaviour
 
     public void RemoveBlock()
     {
+        AllInfo.instance.blocks.Remove(blockComponent);
+        AllInfo.instance.RemoveID(blockComponent.id);
         Destroy(currentBlock);
         ClearInspector();
         CleanInspector();

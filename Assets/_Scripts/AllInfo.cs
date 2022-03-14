@@ -15,7 +15,7 @@ public class AllInfo : MonoBehaviour
     [ReadOnly] public string onExitFunctionName;
     [ReadOnly] public string onUpdateFunctionName;
 
-    [SerializeField] List<Block> blocks = new List<Block>();
+    public List<Block> blocks = new List<Block>();
     [SerializeField] List<int> takenIDs = new List<int>();
 
     public static AllInfo instance;

@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using Sirenix.OdinInspector;
 
 public class Block : MonoBehaviour
 {
@@ -10,6 +11,7 @@ public class Block : MonoBehaviour
     public Color imagecolor;
     [Space]
     public List<Node> connections;
+    [ReadOnly] public int id;
 
     void Awake()
     {
@@ -17,6 +19,8 @@ public class Block : MonoBehaviour
         Image i = GetComponent<Image>();
         i.color = randomC;
         imagecolor = i.color;
+        id = AllInfo.instance.GetID();
+        AllInfo.instance.blocks.Add(this);
     }
 
     public void SetName(string bName)
