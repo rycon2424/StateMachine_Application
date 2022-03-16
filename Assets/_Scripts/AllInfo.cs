@@ -19,6 +19,7 @@ public class AllInfo : MonoBehaviour
     [SerializeField] List<int> takenIDs = new List<int>();
 
     public static AllInfo instance;
+    public static int variableNameCounter;
 
     BinaryFormatter bFormatter;
 
@@ -92,7 +93,7 @@ public class AllInfo : MonoBehaviour
                         {
                             if (!globalVariables.Contains(con.conditionName))
                             {
-                                scriptContent += "@" + Variable(con) + ";";
+                                scriptContent += "@" + Variable(con, "public") + ";";
                                 globalVariables.Add(con.conditionName);
                             }
                         }
@@ -100,7 +101,7 @@ public class AllInfo : MonoBehaviour
                 }
             }
 
-            scriptContent += "@@void Start() @{ stateMachine = new " + stateMachineName + "();@SetupStateMachine(); @}";
+            scriptContent += "@@void Start() @{@ stateMachine = new " + stateMachineName + "();@SetupStateMachine(); @}";
 
             scriptContent += "@@void SetupStateMachine() @{";
             int s = 0;
@@ -125,7 +126,7 @@ public class AllInfo : MonoBehaviour
 
     void CreateDefaultState(string path)
     {
-        string mainClassScript = path + $"/{stateMachineName}.cs";
+        string mainClassScript = path + $"/State.cs";
         if (!File.Exists(mainClassScript))
         {
             string scriptContent = "";
@@ -207,6 +208,9 @@ public class AllInfo : MonoBehaviour
         if (!File.Exists(mainClassScript))
         {
             string scriptContent = "";
+            scriptContent += "using System.Collections;@using System.Collections.Generic;@using UnityEngine;";
+            scriptContent += $"@@ public class {className.blockName} : State";
+            scriptContent += "@{@";
 
             // Variables
             foreach (Node node in className.connections)
@@ -215,11 +219,16 @@ public class AllInfo : MonoBehaviour
                 {
                     if (condition.isGlobal == false)
                     {
-                        scriptContent += Variable(condition);
+                        scriptContent += Variable(condition, "private");
                         scriptContent += "@";
                     }
                 }
             }
+
+            scriptContent += "@public override void " + onEnterFunctionName + "(" + mainClass + " actor)@{@@}@";
+            scriptContent += "@public override void " + onExitFunctionName + "(" + mainClass + " actor)@{@@}@";
+            scriptContent += "@public override void " + onUpdateFunctionName + "(" + mainClass + " actor)@{@";
+
 
             // Conditions
             foreach (Node node in className.connections)
@@ -227,14 +236,32 @@ public class AllInfo : MonoBehaviour
                 scriptContent += "@if (";
                 for (int i = 0; i < node.cons.Count; i++)
                 {
-                    scriptContent += Condition(node.cons[i]);
+                    if (node.cons[i].isGlobal == true)
+                    {
+                        scriptContent += Condition(node.cons[i], "actor.");
+                    }
+                    else
+                    {
+                        scriptContent += Condition(node.cons[i]);
+                    }
+
                     if (i + 1 < node.cons.Count)
                     {
                         scriptContent += " && ";
                     }
                 }
                 scriptContent += ")@";
+                scriptContent += "{";
+
+                const string quote = "\"";
+
+                scriptContent += "@ actor.stateMachine.GoToState(actor, " + quote + node.to.block.blockName + quote + ")";
+
+                scriptContent += "@}@";
             }
+
+            scriptContent += "@}@";
+            scriptContent += "@}@";
 
             scriptContent = scriptContent.Replace("@", System.Environment.NewLine);
 
@@ -242,20 +269,20 @@ public class AllInfo : MonoBehaviour
         }
     }
 
-    string Variable(Conditions con)
+    string Variable(Conditions con, string access)
     {
         string condition = "";
 
         switch (con.typeCondition)
         {
             case 0:
-                condition = "private bool" + con.conditionName;
+                condition = access + " bool " + con.conditionName;
                 break;
             case 1:
-                condition = "private int" + con.conditionName;
+                condition = access + " int " + con.conditionName;
                 break;
             case 2:
-                condition = "private float" + con.conditionName;
+                condition = access + " float " + con.conditionName;
                 break;
             default:
                 break;
@@ -263,7 +290,7 @@ public class AllInfo : MonoBehaviour
         return condition;
     }
 
-    string Condition(Conditions con)
+    string Condition(Conditions con, string inheritedClass = "")
     {
         string condition = "";
 
@@ -271,30 +298,30 @@ public class AllInfo : MonoBehaviour
         {
             case 0:
                 if (con.boolValue)
-                    condition = con.conditionName + " == true";
+                    condition = inheritedClass + con.conditionName + " == true";
                 else
-                    condition = con.conditionName + " == false";
+                    condition = inheritedClass + con.conditionName + " == false";
                 break;
             case 1:
                 switch (con.intFloatCon)
                 {
                     case 0:
-                        condition = con.conditionName + " == " + con.intValue.ToString();
+                        condition = inheritedClass + con.conditionName + " == " + con.intValue.ToString();
                         break;
                     case 1:
-                        condition = con.conditionName + " > " + con.intValue.ToString();
+                        condition = inheritedClass + con.conditionName + " > " + con.intValue.ToString();
                         break;
                     case 2:
-                        condition = con.conditionName + " < " + con.intValue.ToString();
+                        condition = inheritedClass + con.conditionName + " < " + con.intValue.ToString();
                         break;
                     case 3:
-                        condition = con.conditionName + " <= " + con.intValue.ToString();
+                        condition = inheritedClass + con.conditionName + " <= " + con.intValue.ToString();
                         break;
                     case 4:
-                        condition = con.conditionName + " >= " + con.intValue.ToString();
+                        condition = inheritedClass + con.conditionName + " >= " + con.intValue.ToString();
                         break;
                     case 5:
-                        condition = con.conditionName + " != " + con.intValue.ToString();
+                        condition = inheritedClass + con.conditionName + " != " + con.intValue.ToString();
                         break;
                     default:
                         break;
@@ -304,22 +331,22 @@ public class AllInfo : MonoBehaviour
                 switch (con.intFloatCon)
                 {
                     case 0:
-                        condition = con.conditionName + " == " + con.floatValue.ToString() + "f";
+                        condition = inheritedClass + con.conditionName + " == " + con.floatValue.ToString() + "f";
                         break;
                     case 1:
-                        condition = con.conditionName + " > " + con.floatValue.ToString() + "f";
+                        condition = inheritedClass + con.conditionName + " > " + con.floatValue.ToString() + "f";
                         break;
                     case 2:
-                        condition = con.conditionName + " < " + con.floatValue.ToString() + "f";
+                        condition = inheritedClass + con.conditionName + " < " + con.floatValue.ToString() + "f";
                         break;
                     case 3:
-                        condition = con.conditionName + " <= " + con.floatValue.ToString() + "f";
+                        condition = inheritedClass + con.conditionName + " <= " + con.floatValue.ToString() + "f";
                         break;
                     case 4:
-                        condition = con.conditionName + " >= " + con.floatValue.ToString() + "f";
+                        condition = inheritedClass + con.conditionName + " >= " + con.floatValue.ToString() + "f";
                         break;
                     case 5:
-                        condition = con.conditionName + " != " + con.floatValue.ToString() + "f";
+                        condition = inheritedClass + con.conditionName + " != " + con.floatValue.ToString() + "f";
                         break;
                     default:
                         break;

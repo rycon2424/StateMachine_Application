@@ -24,7 +24,8 @@ public class ConnectionBox : MonoBehaviour
 
         Conditions cons = new Conditions();
 
-        cons.conditionName = "Condition" + thisNode.cons.Count;
+        cons.conditionName = "Condition" + AllInfo.variableNameCounter;
+        AllInfo.variableNameCounter++;
         cons.toState = thisNode.to.block.blockName;
 
         c.valueName.text = cons.conditionName;
