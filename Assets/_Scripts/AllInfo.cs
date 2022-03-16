@@ -65,6 +65,7 @@ public class AllInfo : MonoBehaviour
         {
             CreateState(pathForExport, stateClass);
         }
+        ApplicationConsole.console.UpdateConsole("Exported to " + pathForExport);
         Debug.Log("Exported to " + pathForExport);
     }
 
