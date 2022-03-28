@@ -98,8 +98,9 @@ public class Inspector : MonoBehaviour
 
     void ConditionComponent()
     {
-        int previousConditions = 0;
+        int totalCond = 0;
         int sizeMultiplyer = 0;
+
         for (int i = 0; i < blockComponent.connections.Count; i++)
         {
             sizeMultiplyer += blockComponent.connections[i].cons.Count;
@@ -109,11 +110,12 @@ public class Inspector : MonoBehaviour
         for (int i = 0; i < blockComponent.connections.Count; i++)
         {
             GameObject go = Instantiate(conditionPrefab, conditionsContentBox);
+            
+            Vector3 spawnPos = startSpawnPos - new Vector3(0, spacing * i + (spacingAfterNewCon * totalCond), 0);
+            go.GetComponent<RectTransform>().anchoredPosition = spawnPos;
 
-            Vector3 spawnPos = startSpawnPos - new Vector3(0, (spacing + (spacingAfterNewCon * previousConditions)) * i, 0);
-
-            go.GetComponent<RectTransform>().position = spawnPos;
             string connectionText = blockComponent.connections[i].from.block.blockName + " > " + blockComponent.connections[i].to.block.blockName;
+
             ConnectionBox conBox = go.GetComponent<ConnectionBox>();
             conBox.transitionText.text = connectionText;
             conBox.thisNode = blockComponent.connections[i];
@@ -122,12 +124,10 @@ public class Inspector : MonoBehaviour
             conBox.delete.onClick.AddListener(() => RemoveConnection(temp));
             conditionList.Add(go);
 
-            previousConditions = 0;
-
             for (int p = 0; p < conBox.thisNode.cons.Count; p++)
             {
                 conBox.LoadCondition(conBox.thisNode.cons[p], p);
-                previousConditions++;
+                totalCond++;
             }
         }
     }

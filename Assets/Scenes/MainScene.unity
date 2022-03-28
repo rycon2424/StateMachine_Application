@@ -511,9 +511,9 @@ MonoBehaviour:
   contentBox: {fileID: 1431729395}
   conditionPrefab: {fileID: 7512848405925159454, guid: ebd52d9780281de4fb183c31c602102e, type: 3}
   conditionsContentBox: {fileID: 1431729395}
-  startSpawnPos: {x: 115, y: 530, z: 0}
+  startSpawnPos: {x: 0, y: -33, z: 0}
   spacing: 90
-  spacingAfterNewCon: 60
+  spacingAfterNewCon: 75
 --- !u!1 &121553361
 GameObject:
   m_ObjectHideFlags: 0
