@@ -14,7 +14,6 @@ public class Inspector : MonoBehaviour
     public Image bgImage;
     public InputField stateNameField;
     public Toggle deleteToggle;
-    public Toggle enterstate;
     public Button deleteButton;
 
     [Header("Color Component")]
@@ -148,13 +147,14 @@ public class Inspector : MonoBehaviour
         LoadInspector(currentBlock, currentBlock.GetComponent<Image>().color);
     }
 
-    private string ogName;
+    [ShowInInspector] [ReadOnly] private string ogName;
     public void ChangeStateName()
     {
         bool existsAlready = false;
-        foreach (var state in ac.existingStates)
+        foreach (var state in AllInfo.instance.blocks)
         {
-            if (state == stateNameField.text)
+            Debug.Log($"{state.blockName} == {stateNameField.text}");
+            if (state.blockName == stateNameField.text)
             {
                 existsAlready = true;
             }
@@ -169,20 +169,31 @@ public class Inspector : MonoBehaviour
         }
         else
         {
-            ac.existingStates.Remove(ogName);
             ogName = stateNameField.text;
             currentBlock.GetComponent<Block>().SetName(ogName);
-            ac.existingStates.Add(ogName);
         }
     }
 
     public void RemoveBlock()
     {
-        AllInfo.instance.blocks.Remove(blockComponent);
+        AllInfo.instance.RemoveBlock(blockComponent);
         AllInfo.instance.RemoveID(blockComponent.id);
         Destroy(currentBlock);
         ClearInspector();
         CleanInspector();
+    }
+
+    public void SwitchEnterState()
+    {
+        foreach (var block in AllInfo.instance.blocks)
+        {
+            if (block.enterState == true)
+            {
+                block.UpdateEnterState(false);
+                break;
+            }
+        }
+        blockComponent.UpdateEnterState(true);
     }
 
 }

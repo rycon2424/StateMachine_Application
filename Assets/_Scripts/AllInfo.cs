@@ -28,6 +28,28 @@ public class AllInfo : MonoBehaviour
         instance = this;
     }
 
+    public bool IsOnlyBlock() // If only block it will automaticly be the enterState
+    {
+        if (blocks.Count < 1)
+        {
+            return true;
+        }
+        return false;
+    }
+
+    public void RemoveBlock(Block blockToRemove)
+    {
+        blocks.Remove(blockToRemove);
+        if (blocks.Count > 0)
+        {
+            if (blockToRemove.enterState == true)
+            {
+                int newEnterBlock = Random.Range(0, blocks.Count);
+                blocks[newEnterBlock].UpdateEnterState(true);
+            }
+        }
+    }
+
     public void RemoveID(int id)
     {
         takenIDs.Remove(id);

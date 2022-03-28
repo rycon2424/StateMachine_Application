@@ -12,8 +12,6 @@ public class ApplicationControl : MonoBehaviour
     [SerializeField] Transform editView;
     [SerializeField] InputField newStateField;
     [SerializeField] Button newStateButton;
-    [Space]
-    public List<string> existingStates = new List<string>();
 
     private Camera mainCam;
 
@@ -64,8 +62,6 @@ public class ApplicationControl : MonoBehaviour
 
         spawnedBlock.GetComponent<Block>().SetName(newStateField.text);
 
-        existingStates.Add(newStateField.text);
-
         newStateField.text = "";
         newStateButton.interactable = false;
     }
@@ -78,9 +74,9 @@ public class ApplicationControl : MonoBehaviour
             newStateButton.interactable = false;
             return;
         }
-        foreach (var state in existingStates)
+        foreach (var state in AllInfo.instance.blocks)
         {
-            if (state == newStateField.text)
+            if (state.blockName == newStateField.text)
             {
                 notAvailable = true;
             }

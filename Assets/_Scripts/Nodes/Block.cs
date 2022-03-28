@@ -10,6 +10,7 @@ public class Block : MonoBehaviour
     public bool enterState;
     [SerializeField] Text blockNameText;
     public Color imagecolor;
+    [SerializeField] GameObject enterStateIndicator;
     [Space]
     public List<Node> connections;
     [ReadOnly] public int id;
@@ -21,6 +22,8 @@ public class Block : MonoBehaviour
         i.color = randomC;
         imagecolor = i.color;
         id = AllInfo.instance.GetID();
+        enterState = AllInfo.instance.IsOnlyBlock();
+        UpdateEnterState(enterState);
         AllInfo.instance.blocks.Add(this);
     }
 
@@ -28,5 +31,11 @@ public class Block : MonoBehaviour
     {
         blockName = bName;
         blockNameText.text = blockName; 
+    }
+
+    public void UpdateEnterState(bool isEnterState)
+    {
+        enterState = isEnterState;
+        enterStateIndicator.SetActive(isEnterState);
     }
 }
