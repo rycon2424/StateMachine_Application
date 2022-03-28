@@ -124,14 +124,19 @@ public class AllInfo : MonoBehaviour
             scriptContent += "@@#void Start() @#{@## stateMachine = new " + stateMachineName + "();@##SetupStateMachine(); @#}";
 
             scriptContent += "@@#void SetupStateMachine() @#{";
-            int s = 0;
             foreach (Block state in blocks)
             {
-                s++;
-                scriptContent += "@##" + state.blockName + " state" + s.ToString() + " = new " + state.blockName + "();";
-                scriptContent += "@##stateMachine.AddState(state" + s.ToString() + ");";
+                scriptContent += "@##" + state.blockName + " " + state.blockName + "State" + " = new " + state.blockName + "();";
+                scriptContent += "@##stateMachine.AddState(" + state.blockName + "State);";
             }
-            scriptContent += "@##stateMachine.GoToState(this, state" + s.ToString() + ");";
+            const string quote = "\"";
+            foreach (Block state in blocks)
+            {
+                if (state.enterState)
+                {
+                    scriptContent += "@##stateMachine.GoToState(this, "+ quote + state.blockName + quote + ");";
+                }
+            }
             scriptContent += "@#}@";
 
             scriptContent += "@#void Update()@#{@##currentState." + onUpdateFunctionName + "(this);@#}@";
