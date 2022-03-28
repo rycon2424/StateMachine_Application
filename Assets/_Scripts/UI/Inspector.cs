@@ -14,6 +14,7 @@ public class Inspector : MonoBehaviour
     public Image bgImage;
     public InputField stateNameField;
     public Toggle deleteToggle;
+    public Toggle enterstate;
     public Button deleteButton;
 
     [Header("Color Component")]

@@ -7,6 +7,7 @@ using Sirenix.OdinInspector;
 public class Block : MonoBehaviour
 {
     public string blockName;
+    public bool enterState;
     [SerializeField] Text blockNameText;
     public Color imagecolor;
     [Space]

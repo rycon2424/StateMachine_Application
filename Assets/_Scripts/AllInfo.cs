@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using Sirenix.OdinInspector;
 using System.IO;
-using UnityEngine.Assertions;
 using System.Runtime.Serialization.Formatters.Binary;
+using System.Linq;
 
 public class AllInfo : MonoBehaviour
 {
@@ -21,13 +21,10 @@ public class AllInfo : MonoBehaviour
     public static AllInfo instance;
     public static int variableNameCounter;
 
-    BinaryFormatter bFormatter;
-
     private void Awake()
     {
         if (instance != null)
             Destroy(instance);
-        bFormatter = new BinaryFormatter();
         instance = this;
     }
 
@@ -80,8 +77,8 @@ public class AllInfo : MonoBehaviour
             scriptContent += "@";
             scriptContent += "@public class " + mainClass + " : MonoBehaviour";
             scriptContent += "@{@";
-            scriptContent += "public " + stateMachineName + " stateMachine;";
-            scriptContent += "@public State currentState;";
+            scriptContent += "#public " + stateMachineName + " stateMachine;";
+            scriptContent += "@#public State currentState;";
 
             List<string> globalVariables = new List<string>();
             foreach (Block state in blocks)
@@ -94,7 +91,7 @@ public class AllInfo : MonoBehaviour
                         {
                             if (!globalVariables.Contains(con.conditionName))
                             {
-                                scriptContent += "@" + Variable(con, "public") + ";";
+                                scriptContent += "@#" + Variable(con, "public") + ";";
                                 globalVariables.Add(con.conditionName);
                             }
                         }
@@ -102,26 +99,24 @@ public class AllInfo : MonoBehaviour
                 }
             }
 
-            scriptContent += "@@void Start() @{@ stateMachine = new " + stateMachineName + "();@SetupStateMachine(); @}";
+            scriptContent += "@@#void Start() @#{@## stateMachine = new " + stateMachineName + "();@##SetupStateMachine(); @#}";
 
-            scriptContent += "@@void SetupStateMachine() @{";
+            scriptContent += "@@#void SetupStateMachine() @#{";
             int s = 0;
             foreach (Block state in blocks)
             {
-                scriptContent += "@" + state.blockName + " state" + s.ToString() + " = new " + state.blockName + "();";
-                scriptContent += "@stateMachine.AddState(state" + s.ToString() + ");";
                 s++;
+                scriptContent += "@##" + state.blockName + " state" + s.ToString() + " = new " + state.blockName + "();";
+                scriptContent += "@##stateMachine.AddState(state" + s.ToString() + ");";
             }
-            scriptContent += "@stateMachine.GoToState(this, state" + s.ToString() + ");";
-            scriptContent += "@}";
+            scriptContent += "@##stateMachine.GoToState(this, state" + s.ToString() + ");";
+            scriptContent += "@#}@";
 
-            scriptContent += "@void Update()@{@currentState." + onUpdateFunctionName + "(this);@}@";
+            scriptContent += "@#void Update()@#{@##currentState." + onUpdateFunctionName + "(this);@#}@";
 
-            scriptContent += "@public void ChangeState(State newState)@{@ currentState = newState;@ } ";
+            scriptContent += "@#public void ChangeState(State newState)@#{@## currentState = newState;@#}@}";
 
-            scriptContent = scriptContent.Replace("@", System.Environment.NewLine);
-
-            File.WriteAllText(mainClassScript, scriptContent);
+            File.WriteAllText(mainClassScript, PlaceTabsAndNewlines(scriptContent));
         }
     }
 
@@ -135,13 +130,12 @@ public class AllInfo : MonoBehaviour
             scriptContent += "using System.Collections;@using System.Collections.Generic;@using UnityEngine;";
             scriptContent += "@";
             scriptContent += "@public class State@{";
-            scriptContent += "@public virtual void " + onEnterFunctionName + "(" + mainClass + " actor) @{@}@";
-            scriptContent += "@public virtual void " + onExitFunctionName + "(" + mainClass + " actor) @{@}@";
-            scriptContent += "@public virtual void " + onUpdateFunctionName + "(" + mainClass + " actor) @{@}@";
+            scriptContent += "@#public virtual void " + onEnterFunctionName + "(" + mainClass + " actor) @#{@#}@";
+            scriptContent += "@#public virtual void " + onExitFunctionName + "(" + mainClass + " actor) @#{@#}@";
+            scriptContent += "@#public virtual void " + onUpdateFunctionName + "(" + mainClass + " actor) @#{@#}@";
             scriptContent += "@}";
 
-            scriptContent = scriptContent.Replace("@", System.Environment.NewLine);
-            File.WriteAllText(mainClassScript, scriptContent);
+            File.WriteAllText(mainClassScript, PlaceTabsAndNewlines(scriptContent));
         }
     }
 
@@ -154,52 +148,51 @@ public class AllInfo : MonoBehaviour
 
             scriptContent += "using System.Collections;@using System.Collections.Generic;@using UnityEngine;";
             scriptContent += "@@public class " + stateMachineName + "@{";
-            scriptContent += "@private State currentState";
-            scriptContent += "@private List<State> allStates = new List<State>();";
-            scriptContent += "@bool stateExists;";
+            scriptContent += "@#private State currentState;";
+            scriptContent += "@#private List<State> allStates = new List<State>();";
+            scriptContent += "@#bool stateExists;";
 
             //GoToState Function
-            scriptContent += "@@ public void GoToState(" + mainClass + " actor, string newstate)";
-            scriptContent += "@if (LockStateMachine)@{@return;@ }";
-            scriptContent += "@stateExists = false;";
-            scriptContent += "@foreach (var s in allStates)@{@if (s.GetType().ToString() == newstate)@{@stateExists = true;@break;@}@}";
-            scriptContent += "@if (stateExists == false)@{@return;@}";
-            scriptContent += "@if (currentState != null)@{@ currentState." + onExitFunctionName +"(actor); @}";
-            scriptContent += "@foreach (var s in allStates)@{@if (s.GetType().ToString() == newstate)@{";
-            scriptContent += "@currentState = s;@@actor.ChangeState(currentState);@@ s." + onEnterFunctionName + "(actor);@return;@}@}@}";
+            scriptContent += "@@#public void GoToState(" + mainClass + " actor, string newstate)@#{";
+            scriptContent += "@##if (LockStateMachine)@##{@###return;@## }";
+            scriptContent += "@##stateExists = false;";
+            scriptContent += "@##foreach (var s in allStates)@##{@###if (s.GetType().ToString() == newstate)@###{@####stateExists = true;@####break;@###}@##}";
+            scriptContent += "@##if (stateExists == false)@##{@###return;@##}";
+            scriptContent += "@##if (currentState != null)@##{##@### currentState." + onExitFunctionName + "(actor); @##}";
+            scriptContent += "@##foreach (var s in allStates)@##{@###if (s.GetType().ToString() == newstate)@###{";
+            scriptContent += "@####currentState = s;@@####actor.ChangeState(currentState);@@####s." + onEnterFunctionName + "(actor);@####return;@###}@##}@#}";
 
             // GetSet Lock Machine
-            scriptContent += "@@public bool LockStateMachine";
-            scriptContent += "@{";
-            scriptContent += "@get;";
-            scriptContent += "@set";
-            scriptContent += "@}";
+            scriptContent += "@@#public bool LockStateMachine";
+            scriptContent += "@#{";
+            scriptContent += "@##get;";
+            scriptContent += "@##set;";
+            scriptContent += "@#}";
 
             // AddState
-            scriptContent += "@@public void AddState(State newState)";
-            scriptContent += "@{";
-            scriptContent += "@allStates.Add(newState);";
-            scriptContent += "@}";
+            scriptContent += "@@#public void AddState(State newState)";
+            scriptContent += "@#{";
+            scriptContent += "@##allStates.Add(newState);";
+            scriptContent += "@#}";
 
             // CurrentState
-            scriptContent += "@@public State CurrentState()";
-            scriptContent += "@{";
-            scriptContent += "@return currentState;";
-            scriptContent += "@}";
+            scriptContent += "@@#public State CurrentState()";
+            scriptContent += "@#{";
+            scriptContent += "@##return currentState;";
+            scriptContent += "@#}";
 
             // IsInState
-            scriptContent += "@@public bool IsInState(string state)";
-            scriptContent += "@{";
-            scriptContent += "@ if (state == currentState.GetType().ToString())";
-            scriptContent += "@{";
-            scriptContent += "@return true;";
-            scriptContent += "@}";
-            scriptContent += "@return false;";
-            scriptContent += "@}";
+            scriptContent += "@@#public bool IsInState(string state)";
+            scriptContent += "@#{";
+            scriptContent += "@##if (state == currentState.GetType().ToString())";
+            scriptContent += "@##{";
+            scriptContent += "@###return true;";
+            scriptContent += "@##}";
+            scriptContent += "@##return false;";
+            scriptContent += "@#}";
             scriptContent += "@}";
 
-            scriptContent = scriptContent.Replace("@", System.Environment.NewLine);
-            File.WriteAllText(mainClassScript, scriptContent);
+            File.WriteAllText(mainClassScript, PlaceTabsAndNewlines(scriptContent));
         }
     }
 
@@ -220,53 +213,55 @@ public class AllInfo : MonoBehaviour
                 {
                     if (condition.isGlobal == false)
                     {
-                        scriptContent += Variable(condition, "private");
+                        scriptContent += Variable(condition, "#private");
+                        scriptContent += ";";
                         scriptContent += "@";
                     }
                 }
             }
 
-            scriptContent += "@public override void " + onEnterFunctionName + "(" + mainClass + " actor)@{@@}@";
-            scriptContent += "@public override void " + onExitFunctionName + "(" + mainClass + " actor)@{@@}@";
-            scriptContent += "@public override void " + onUpdateFunctionName + "(" + mainClass + " actor)@{@";
+            scriptContent += "@#public override void " + onEnterFunctionName + "(" + mainClass + " actor)@#{@@#}@";
+            scriptContent += "@#public override void " + onExitFunctionName + "(" + mainClass + " actor)@#{@@#}@";
+            scriptContent += "@#public override void " + onUpdateFunctionName + "(" + mainClass + " actor)@#{@";
 
 
             // Conditions
             foreach (Node node in className.connections)
             {
-                scriptContent += "@if (";
-                for (int i = 0; i < node.cons.Count; i++)
+                if (node.cons.Count > 0)
                 {
-                    if (node.cons[i].isGlobal == true)
+                    scriptContent += "@##if (";
+                    for (int i = 0; i < node.cons.Count; i++)
                     {
-                        scriptContent += Condition(node.cons[i], "actor.");
-                    }
-                    else
-                    {
-                        scriptContent += Condition(node.cons[i]);
-                    }
+                        if (node.cons[i].isGlobal == true)
+                        {
+                            scriptContent += Condition(node.cons[i], "actor.");
+                        }
+                        else
+                        {
+                            scriptContent += Condition(node.cons[i]);
+                        }
 
-                    if (i + 1 < node.cons.Count)
-                    {
-                        scriptContent += " && ";
+                        if (i + 1 < node.cons.Count)
+                        {
+                            scriptContent += " && ";
+                        }
                     }
+                    scriptContent += ")@";
+                    scriptContent += "##{";
+
+                    const string quote = "\"";
+
+                    scriptContent += "@###actor.stateMachine.GoToState(actor, " + quote + node.to.block.blockName + quote + ");";
+
+                    scriptContent += "@##}@";
                 }
-                scriptContent += ")@";
-                scriptContent += "{";
-
-                const string quote = "\"";
-
-                scriptContent += "@ actor.stateMachine.GoToState(actor, " + quote + node.to.block.blockName + quote + ")";
-
-                scriptContent += "@}@";
             }
 
-            scriptContent += "@}@";
+            scriptContent += "@#}@";
             scriptContent += "@}@";
 
-            scriptContent = scriptContent.Replace("@", System.Environment.NewLine);
-
-            File.WriteAllText(mainClassScript, scriptContent);
+            File.WriteAllText(mainClassScript, PlaceTabsAndNewlines(scriptContent));
         }
     }
 
@@ -360,37 +355,13 @@ public class AllInfo : MonoBehaviour
         return condition;
     }
 
-    public SaveFile sf;
-
-    void SaveProject(string path)
+    string PlaceTabsAndNewlines(string scriptContent)
     {
-        string url = Path.Combine(path, projectName);
+        scriptContent = scriptContent.Replace("@", System.Environment.NewLine);
+        scriptContent = scriptContent.Replace("#", "\t");
 
-        FileStream fstream = null;
-
-        try
-        {
-            fstream = new FileStream(path, FileMode.Create);
-            sf = new SaveFile();
-
-            bFormatter.Serialize(fstream, sf);
-
-            fstream.Flush();
-            fstream.Close();
-        }
-        catch (System.Exception error)
-        {
-            Debug.Log(error.Message);
-            throw;
-        }
+        return scriptContent;
     }
-
-}
-
-[System.Serializable]
-public class SaveFile
-{
-
 }
 
 [System.Serializable]
