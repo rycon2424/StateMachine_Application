@@ -7939,7 +7939,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   m_text: All changes in this current project will be discarded. Save first if you
-    dont want to lose progress of this project.
+    don't want to lose progress of this project.
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 371e938574234754183f6a6a3b1eb7a1, type: 2}
   m_sharedMaterial: {fileID: 4629376178685597272, guid: 371e938574234754183f6a6a3b1eb7a1, type: 2}
