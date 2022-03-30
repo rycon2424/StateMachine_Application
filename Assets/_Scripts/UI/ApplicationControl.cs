@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 public class ApplicationControl : MonoBehaviour
 {
@@ -23,6 +24,11 @@ public class ApplicationControl : MonoBehaviour
     void Update()
     {
         GridMovement();
+    }
+
+    public void ResetApplication()
+    {
+        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
     }
 
     void GridMovement()
@@ -54,10 +60,23 @@ public class ApplicationControl : MonoBehaviour
         }
     }
 
+    public void SpawnLoadedBlock(BlockInfo loadInfo)
+    {
+        Block spawnedBlock = Instantiate(block, editView).GetComponent<Block>();
+        spawnedBlock.GetComponent<RectTransform>().position = loadInfo.blockPosition;
+        spawnedBlock.SetName(loadInfo.blockName);
+        spawnedBlock.enterState = loadInfo.enterState;
+        spawnedBlock.id = loadInfo.id;
+        spawnedBlock.imagecolor = new Color(loadInfo.color.x, loadInfo.color.y, loadInfo.color.z);
+
+        spawnedBlock.LoadBlock();
+    }
+
     public void SpawnBlock()
     {
         Vector3 point = new Vector3(mainCam.transform.position.x, mainCam.transform.position.y, mainCam.transform.position.z);
         GameObject spawnedBlock = Instantiate(block, editView);
+        spawnedBlock.GetComponent<Block>().CreateNewBlock();
         spawnedBlock.GetComponent<RectTransform>().position = point;
 
         spawnedBlock.GetComponent<Block>().SetName(newStateField.text);

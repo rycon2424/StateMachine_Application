@@ -8,7 +8,8 @@ using System.Linq;
 
 public class AllInfo : MonoBehaviour
 {
-    [ReadOnly] public string projectName;
+    //[ReadOnly]
+    public string projectName;
     [ReadOnly] public string stateMachineName;
     [ReadOnly] public string mainClass;
     [ReadOnly] public string onEnterFunctionName;

@@ -15,7 +15,7 @@ public class Block : MonoBehaviour
     public List<Node> connections;
     [ReadOnly] public int id;
 
-    void Awake()
+    public void CreateNewBlock()
     {
         Color randomC = new Color(Random.Range(0.1f, 1f), Random.Range(0.1f, 1f), Random.Range(0.1f, 1f));
         Image i = GetComponent<Image>();
@@ -24,6 +24,13 @@ public class Block : MonoBehaviour
         id = AllInfo.instance.GetID();
         enterState = AllInfo.instance.IsOnlyBlock();
         UpdateEnterState(enterState);
+        AllInfo.instance.blocks.Add(this);
+    }
+
+    public void LoadBlock()
+    {
+        Image i = GetComponent<Image>();
+        i.color = imagecolor;
         AllInfo.instance.blocks.Add(this);
     }
 
