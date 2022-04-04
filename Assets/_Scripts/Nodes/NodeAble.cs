@@ -6,8 +6,8 @@ using UnityEngine.EventSystems;
 
 public class NodeAble : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 {
+    public GameObject nodePrefab;
     [SerializeField] bool hovered;
-    [SerializeField] GameObject nodePrefab;
     [Space]
     public LineRenderer currentNode;
 
@@ -42,8 +42,7 @@ public class NodeAble : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
             {
                 if (NodeManager.currentHoveringNode != null && NodeManager.currentHoveringNode != this)
                 {
-                    NodeManager.ConnectNodes(currentNode.GetComponent<Node>(), this, NodeManager.currentHoveringNode);
-                    block.connections.Add(currentNode.GetComponent<Node>());
+                    CreateConnection(NodeManager.currentHoveringNode, currentNode.GetComponent<Node>());
                     currentNode = null;
                 }
                 else
@@ -65,6 +64,24 @@ public class NodeAble : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
             currentNode.transform.localPosition = Vector3.zero;
             currentNode.SetPosition(0, transform.position + new Vector3(0, 0, 0));
         }
+    }
+
+    public void CreateConnection(NodeAble to, Node cur = null)
+    {
+        if (currentNode == null)
+        {
+            currentNode = Instantiate(nodePrefab, transform).GetComponent<LineRenderer>();
+            currentNode.material.color = GetComponent<Image>().color;
+            currentNode.transform.localPosition = Vector3.zero;
+            NodeManager.ConnectNodes(currentNode.GetComponent<Node>(), this, to);
+        }
+        else
+        {
+            NodeManager.ConnectNodes(cur, this, to);
+        }
+
+        block.connections.Add(currentNode.GetComponent<Node>());
+        currentNode = null;
     }
 
 }
