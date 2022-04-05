@@ -66,14 +66,19 @@ public class NodeAble : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
         }
     }
 
-    public void CreateConnection(NodeAble to, Node cur = null)
+    public void CreateConnection(NodeAble to, Node cur = null, List<Conditions> extraCons = null)
     {
         if (currentNode == null)
         {
             currentNode = Instantiate(nodePrefab, transform).GetComponent<LineRenderer>();
             currentNode.material.color = GetComponent<Image>().color;
             currentNode.transform.localPosition = Vector3.zero;
+
+            Node nodeToLoad = currentNode.GetComponent<Node>();
+
             NodeManager.ConnectNodes(currentNode.GetComponent<Node>(), this, to);
+
+            nodeToLoad.LoadConditions(extraCons);
         }
         else
         {

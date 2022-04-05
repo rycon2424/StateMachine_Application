@@ -34,6 +34,8 @@ public class LoadSaveProject : MonoBehaviour
         SaveFile sf = new SaveFile();
 
         sf.projectName = AllInfo.instance.projectName;
+
+        SaveSettings(sf);
         SaveBlocks(sf);
 
         string savefile = JsonUtility.ToJson(sf);
@@ -94,17 +96,17 @@ public class LoadSaveProject : MonoBehaviour
     {
         string projectToString = "";
         SaveFile sf = new SaveFile();
-        //try
-        //{
+        try
+        {
             projectToString = File.ReadAllText(path);
             sf = JsonUtility.FromJson<SaveFile>(projectToString);
             LoadUpProject(sf);
             ApplicationConsole.console.UpdateConsole("Succesfully loaded project: " + sf.projectName);
-        //}
-        //catch (System.Exception e)
-        //{
-        //    ApplicationConsole.console.UpdateConsole(e.Message);
-        //}
+        }
+        catch (System.Exception e)
+        {
+            ApplicationConsole.console.UpdateConsole(e.Message);
+        }
     }
 
     public void LoadUpProject(SaveFile sf)
@@ -155,7 +157,7 @@ public class LoadSaveProject : MonoBehaviour
         NodeAble nodeRef = fromBlock.GetComponent<NodeAble>();
         if (fromBlock != null && toBlock != null)
         {
-            nodeRef.CreateConnection(toBlock.GetComponent<NodeAble>());
+            nodeRef.CreateConnection(toBlock.GetComponent<NodeAble>(), null, conditions);
         }
         else
         {
@@ -168,7 +170,7 @@ public class LoadSaveProject : MonoBehaviour
 public class SaveFile
 {
     public string projectName;
-    public ProjectNames projectInfo;
+    public ProjectNames projectInfo = new ProjectNames();
     public List<BlockInfo> blocks = new List<BlockInfo>();
 }
 

@@ -30,4 +30,9 @@ public class Node : MonoBehaviour
             }
         }
     }
+
+    public void LoadConditions(List<Conditions> loadedCons)
+    {
+        cons.AddRange(loadedCons);
+    }
 }
