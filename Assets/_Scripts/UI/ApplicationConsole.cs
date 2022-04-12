@@ -5,7 +5,7 @@ using TMPro;
 
 public class ApplicationConsole : MonoBehaviour
 {
-    [SerializeField] TMP_Text text;
+    [SerializeField] TMP_InputField text;
     public static ApplicationConsole console;
 
     private void Awake()
